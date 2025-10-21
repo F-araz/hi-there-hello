@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hello</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pastel-pink': '#FFC0CB',
+                        'pastel-lavender': '#E6E6FA',
+                        'soft-lavender': '#B5A6FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'smooth-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'button-glow': '0 0 10px 0 #FFC0CB, 0 0 5px 0 #FFC0CB',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        /* Default (Light) Mode Colors */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--pastel-pink) 0%, var(--pastel-lavender) 100%);
+            --pastel-pink: #F7B0C5; 
+            --pastel-lavender: #D9D9FF; 
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            --pastel-pink: #4A144F; 
+            --pastel-lavender: #1A1B29; 
+            color: #E6E6FA; 
+        }
+        
+        /* Dark Mode Utility Overrides */
+        body.dark-mode .text-gray-500 { color: #CFCFCF; }
+        body.dark-mode .text-gray-700 { color: #E6E6FA; }
+        body.dark-mode .bg-pastel-pink { background-color: #FF7ACC; }
+        body.dark-mode .hover\:bg-pink-400:hover { background-color: #E35CB8; }
+        body.dark-mode .focus\:ring-pastel-pink:focus { border-color: #FF7ACC; }
+
+        /* Component Styling */
+        .text-glow {
+            text-shadow: 0 0 3px rgba(181, 166, 255, 0.5);
+        }
+
+        .glow-h1 {
+            text-shadow: 0 0 10px rgba(255, 192, 203, 0.9), 0 0 20px rgba(181, 166, 255, 0.7);
+        }
+        body.dark-mode .glow-h1 {
+            text-shadow: 0 0 10px rgba(160, 126, 255, 0.9), 0 0 20px rgba(255, 122, 204, 0.7);
+        }
+
+        .mini-player {
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        body.dark-mode .mini-player {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(10px, -15px) rotate(1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .icon-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .icon-float-2 {
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .pdf-viewer-card {
+            min-height: 80vh;
+            max-height: 100%;
+            width: 95%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.05);
+            z-index: 30;
+        }
+        body.dark-mode .pdf-viewer-card {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .typing-container {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 4px solid;
+            border-color: #B5A6FF;
+        }
+        body.dark-mode .typing-container {
+             border-color: #A07EFF;
+        }
+
+        @keyframes blink-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: #B5A6FF; } 
+        }
+
+        .finished-typing {
+            border-right: none !important;
+        }
+
+        /* Heart styles */
+        .heart {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            background-color: var(--heart-color);
+            transform: rotate(-45deg);
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 1; 
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--heart-color);
+        }
+
+        .heart::before { top: -50%; left: 0; }
+        .heart::after { left: 50%; top: 0; }
+
+        .floating-heart {
+            animation-name: flow;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes flow {
+            0% { transform: translate(0, 0) rotate(-45deg); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translate(0, -100vh) rotate(-45deg); opacity: 0; }
+        }
+
+        @keyframes burst-fly {
+            0% { transform: translate(0, 0) scale(1) rotate(-45deg); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0.1) rotate(135deg); opacity: 0; }
+        }
+
+        .burst-heart-animation {
+            animation: burst-fly 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            pointer-events: none;
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Music Player Styles */
+        #seekSlider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: #FFC0CB;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        body.dark-mode #seekSlider {
+            background: #FF7ACC; 
+        }
+
+        #seekSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #B5A6FF;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(181, 166, 255, 0.7);
+        }
+        body.dark-mode #seekSlider::-webkit-slider-thumb {
+            background: #A07EFF;
+            box-shadow: 0 0 5px rgba(160, 126, 255, 0.7);
+        }
+
+        #seekSlider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #B5A6FF;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 5px rgba(181, 166, 255, 0.7);
+        }
+        body.dark-mode #seekSlider::-moz-range-thumb {
+            background: #A07EFF;
+            box-shadow: 0 0 5px rgba(160, 126, 255, 0.7);
+        }
+        
+        /* Mode Toggle Button Styling (Moved from Tailwind to CSS for state change) */
+        #modeToggle {
+            background-color: #B5A6FF; /* soft-lavender */
+        }
+        body.dark-mode #modeToggle {
+            background-color: #FF7ACC; /* Brighter pink for dark mode contrast */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start p-4 relative overflow-x-hidden">
+
+    <!-- Heart Field for Flowing Hearts (z-index: 1 is set by .heart) -->
+    <div id="heart-field" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+    
+    <div class="flex space-x-6 mt-10 mb-6 z-40">
+        <a href="https://f-araz.github.io/for-my-wife/" class="px-6 py-3 bg-pastel-pink text-white font-semibold rounded-full shadow-button-glow hover:bg-pink-400 transition-colors transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-pastel-pink focus:ring-offset-2 focus:ring-offset-pastel-lavender text-glow">
+            ❤️
+        </a>
+        <a href="https://f-araz.github.io/love/" class="px-6 py-3 bg-pastel-pink text-white font-semibold rounded-full shadow-button-glow hover:bg-pink-400 transition-colors transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-pastel-pink focus:ring-offset-2 focus:ring-offset-pastel-lavender text-glow">
+            ❤️
+        </a>
+        <!-- Dark Mode Toggle has been moved to the bottom left -->
+    </div>
+
+    <div class="absolute top-10 left-10 text-soft-lavender icon-float opacity-70 z-20">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    <div class="absolute top-2/3 right-1/4 text-pastel-pink icon-float-2 opacity-60 z-20">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 18.005l-7.416 3.908 1.48-8.279L0 9.306l8.332-1.151L12 .587z"/></svg>
+    </div>
+    
+    <main class="pdf-viewer-card rounded-3xl p-6 md:p-10 shadow-smooth-xl mt-6 mb-10 flex flex-col justify-start items-center transition-all duration-300">
+
+        <div class="text-3xl font-bold text-soft-lavender mb-4 glow-h1 typing-container" id="typing-text">
+        </div>
+
+        <p class="text-gray-500 mb-6 text-sm text-glow">Click</p>
+
+        <div class="w-full h-[70vh] rounded-2xl overflow-hidden border-4 border-soft-lavender/50 shadow-inner">
+            <iframe 
+                src="uwu.pdf" 
+                title="uwu"
+                class="w-full h-full border-none"
+                allowfullscreen
+            >
+                <p class="p-4 text-center text-gray-700">nah <a href="uwu.pdf" class="text-pastel-pink underline">Download instead</a></p>
+            </iframe>
+        </div>
+    </main>
+
+    <!-- DARK MODE TOGGLE BUTTON - FIXED ON BOTTOM LEFT -->
+    <div id="modeTogglerContainer" class="fixed bottom-6 left-6 z-50">
+        <button id="modeToggle" onclick="toggleDarkMode()" class="w-12 h-12 rounded-full text-white flex items-center justify-center shadow-smooth-xl hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-soft-lavender focus:ring-offset-2 focus:ring-offset-pastel-lavender">
+            <!-- Sun Icon (for Light Mode) -->
+            <svg id="sunIcon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.766 5.444l-1.54.914a.75.75 0 00.722 1.218l1.54-.914a.75.75 0 00-.722-1.218zM17.778 6.666l1.54.914a.75.75 0 00.722-1.218l-1.54-.914a.75.75 0 00-.722 1.218zM12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM4.5 12a.75.75 0 01.75-.75H7.5a.75.75 0 010 1.5H5.25A.75.75 0 014.5 12zM19.5 12a.75.75 0 01.75-.75H22.5a.75.75 0 010 1.5H20.25a.75.75 0 01-.75-.75zM7.043 17.778l.914 1.54a.75.75 0 001.218-.722l-.914-1.54a.75.75 0 00-1.218.722zM15.939 17.778l.914 1.54a.75.75 0 001.218-.722l-.914-1.54a.75.75 0 00-1.218.722zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75z"/></svg>
+            <!-- Moon Icon (for Dark Mode) -->
+            <svg id="moonIcon" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.25 10.5A7.5 7.5 0 0010.5 3a.75.75 0 00-.75.75c0 4.148 3.352 7.5 7.5 7.5h.001a.75.75 0 00.75-.75zM12.75 12A.75.75 0 0012 12.75V15a.75.75 0 001.5 0v-2.25a.75.75 0 00-.75-.75zM8.47 6.03a.75.75 0 00-1.06 1.06l.854.853a.75.75 0 001.06-1.06l-.854-.853zM18.677 17.47a.75.75 0 00-1.06-1.06l-.854.853a.75.75 0 001.06 1.06l.854-.853zM5.25 13.5a.75.75 0 000 1.5h2.25a.75.75 0 000-1.5H5.25zM16.5 14.25a.75.75 0 00-.75.75v2.25a.75.75 0 001.5 0V15a.75.75 0 00-.75-.75z"/></svg>
+        </button>
+    </div>
+
+    <!-- MUSIC PLAYER - FIXED ON BOTTOM RIGHT -->
+    <div id="musicPlayer" class="fixed bottom-6 right-6 z-50">
+
+        <div id="fullControls"
+             class="mini-player absolute bottom-full right-0 mb-3 p-4 rounded-3xl shadow-2xl border-2 border-soft-lavender transition-all duration-300 ease-in-out w-80 opacity-0 pointer-events-none transform translate-y-4">
+
+            <p class="text-lg font-semibold text-soft-lavender mb-2 text-glow">Dream by Lisa</p>
+
+            <audio id="backgroundAudio" loop preload="auto">
+                <source src="https://cdn.discordapp.com/attachments/884346438149087234/1430129248617889823/dream_by_lisa.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <div class="flex flex-col space-y-2">
+
+                <div class="flex justify-between text-xs font-medium text-gray-700">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+
+                <input type="range" id="seekSlider" value="0" min="0" max="100" step="0.01" class="w-full">
+
+                <div class="flex justify-center pt-2">
+                    <button id="playPauseButton" class="w-12 h-12 rounded-full bg-pastel-pink text-white flex items-center justify-center shadow-md hover:bg-pink-400 transition-colors transform hover:scale-105 active:scale-95">
+                        <svg id="playIcon" class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="pauseIcon" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="playerHandle"
+             onclick="togglePlayer()"
+             class="w-16 h-16 bg-pastel-pink rounded-full flex items-center justify-center text-white text-2xl cursor-pointer shadow-smooth-xl hover:scale-105 transition-transform">
+            🎶
+        </div>
+    </div>
+
+    <script>
+        const textToType = "I love you. <3";
+        const typingElement = document.getElementById('typing-text');
+        const heartField = document.getElementById('heart-field');
+        const heartColors = ["#FFC0CB", "#E6E6FA", "#B5A6FF"];
+
+        function updateToggleIcons(isDark) {
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+            if (!sunIcon || !moonIcon) return; 
+
+            if (isDark) {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateToggleIcons(isDark);
+        }
+
+        function checkInitialTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            let isDark = false;
+            if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+                isDark = true;
+            }
+
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+            }
+            updateToggleIcons(isDark);
+        }
+
+        function typeEffect() {
+            let charIndex = 0;
+            function typeNextChar() {
+                if (charIndex < textToType.length) {
+                    if (textToType.substring(charIndex, charIndex + 4) === ". <3") {
+                        typingElement.textContent += textToType.substring(charIndex, charIndex + 4);
+                        charIndex += 4;
+                    } else {
+                        typingElement.textContent += textToType.charAt(charIndex);
+                        charIndex++;
+                    }
+                    setTimeout(typeNextChar, 100);
+                } else {
+                    typingElement.style.animation = 'blink-cursor 0.7s step-end infinite';
+                    setTimeout(() => {
+                        typingElement.classList.add('finished-typing');
+                        typingElement.style.animation = 'none';
+                    }, 4000);
+                }
+            }
+            typeNextChar();
+        }
+
+        function createFlowingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart', 'floating-heart');
+            
+            const size = Math.random() * 20 + 15;
+            const duration = Math.random() * 10 + 10;
+            const delay = Math.random() * 10;
+            const left = Math.random() * 100;
+
+            heart.style.setProperty('--heart-color', heartColors[Math.floor(Math.random() * heartColors.length)]);
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.left = `${left}vw`;
+            heart.style.top = `100vh`; 
+            heart.style.opacity = '0';
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `-${delay}s`;
+
+            heartField.appendChild(heart);
+
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+                createFlowingHeart();
+            });
+        }
+
+        function initFlowingHearts(count = 25) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(createFlowingHeart, i * 400); 
+            }
+        }
+
+        function createBurstHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart', 'burst-heart-animation');
+            
+            const color = heartColors[Math.floor(Math.random() * heartColors.length)];
+            const angle = Math.random() * 360;
+            const distance = Math.random() * 80 + 50; 
+            
+            const endX = distance * Math.cos(angle * Math.PI / 180);
+            const endY = distance * Math.sin(angle * Math.PI / 180);
+            
+            const size = Math.random() * 8 + 8;
+
+            heart.style.setProperty('--heart-color', color);
+            heart.style.setProperty('--x', `${endX}px`);
+            heart.style.setProperty('--y', `${endY}px`);
+            
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.top = `${y}px`;
+            heart.style.left = `${x}px`;
+            heart.style.position = 'fixed';
+            heart.style.zIndex = '50';
+            heart.style.opacity = '1';
+
+            document.body.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 1200);
+        }
+
+        function handleGlobalClick(e) {
+            if (e.target.closest('#musicPlayer') || e.target.closest('.pdf-viewer-card') || e.target.closest('#modeToggle')) {
+                return; 
+            }
+            const burstCount = 10;
+            for (let i = 0; i < burstCount; i++) {
+                createBurstHeart(e.clientX, e.clientY);
+            }
+        }
+
+        document.addEventListener('click', handleGlobalClick);
+
+        const audio = document.getElementById('backgroundAudio');
+        const defaultVolume = 0.5;
+        const playPauseButton = document.getElementById('playPauseButton');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const seekSlider = document.getElementById('seekSlider');
+        const currentTimeSpan = document.getElementById('currentTime');
+        const durationSpan = document.getElementById('duration');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function updatePlayPauseIcon() {
+            if (audio.paused) {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            } else {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            }
+        }
+
+        playPauseButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+            updatePlayPauseIcon();
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            durationSpan.textContent = formatTime(audio.duration);
+            seekSlider.max = audio.duration;
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            currentTimeSpan.textContent = formatTime(audio.currentTime);
+            if (!seekSlider.isSeeking) {
+                seekSlider.value = audio.currentTime;
+            }
+        });
+
+        seekSlider.addEventListener('mousedown', () => {
+             seekSlider.isSeeking = true;
+        });
+        seekSlider.addEventListener('touchstart', () => {
+             seekSlider.isSeeking = true;
+        });
+
+        seekSlider.addEventListener('input', () => {
+            currentTimeSpan.textContent = formatTime(seekSlider.value);
+        });
+
+        seekSlider.addEventListener('mouseup', () => {
+            audio.currentTime = seekSlider.value;
+            seekSlider.isSeeking = false;
+        });
+        seekSlider.addEventListener('touchend', () => {
+            audio.currentTime = seekSlider.value;
+            seekSlider.isSeeking = false;
+        });
+
+        audio.volume = defaultVolume;
+
+        if (audio.readyState >= 1) {
+            audio.dispatchEvent(new Event('loadedmetadata'));
+        }
+
+        const tryAutoplay = () => {
+            audio.play().catch(error => {});
+            updatePlayPauseIcon();
+        };
+
+        tryAutoplay();
+
+        document.addEventListener('click', tryAutoplay, { once: true });
+        document.addEventListener('touchstart', tryAutoplay, { once: true });
+
+        const fullControls = document.getElementById('fullControls');
+        const playerHandle = document.getElementById('playerHandle');
+
+        let isExpanded = false;
+
+        function togglePlayer() {
+            isExpanded = !isExpanded;
+
+            if (isExpanded) {
+                fullControls.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                fullControls.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+
+                playerHandle.innerHTML = '❌';
+                playerHandle.classList.remove('bg-pastel-pink');
+                playerHandle.classList.add('bg-soft-lavender');
+
+            } else {
+                fullControls.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                fullControls.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+
+                playerHandle.innerHTML = '🎶';
+                playerHandle.classList.remove('bg-soft-lavender');
+                playerHandle.classList.add('bg-pastel-pink');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            typeEffect();
+            initFlowingHearts();
+            checkInitialTheme(); 
+        });
+    </script>
+</body>
+</html>
